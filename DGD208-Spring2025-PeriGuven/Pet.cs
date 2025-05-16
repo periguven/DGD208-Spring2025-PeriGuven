@@ -12,10 +12,12 @@ namespace DGD208_Spring2025_PeriGuven
         public int Hunger { get; set; }
         public int Sleep { get; set; }
         public int Fun { get; set; }
+        public PetTypes Type { get; set; }
 
-        public Pet(PetTypes type)
+        public Pet(PetTypes type, string name)
         {
-            Name = type.ToString();
+            Type = type;
+            Name = name;
             Hunger = 50;
             Sleep = 50;
             Fun = 50;

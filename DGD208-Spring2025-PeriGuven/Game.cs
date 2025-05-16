@@ -52,7 +52,16 @@ namespace DGD208_Spring2025_PeriGuven
                     break;
 
                 case "1":
-                    //await AdoptingPet();
+                    if (adoptedPet != null)
+                    {
+                        Console.WriteLine("You already have a pet!");
+                        await Task.Delay(1500);
+                    }
+                    else
+                    {
+                        var adoption = new AdoptingPet(adoptedPet);
+                        adoptedPet = await adoption.AdoptAsync();
+                    }
                     break;
 
                 case "2":
