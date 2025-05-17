@@ -12,12 +12,6 @@ namespace DGD208_Spring2025_PeriGuven
         private readonly string _title;
         private readonly Func<T, string> _displaySelector;
 
-        /// <summary>
-        /// Creates a new menu with the specified items and display format.
-        /// </summary>
-        /// <param name="title">The title to display at the top of the menu</param>
-        /// <param name="items">The list of items to display in the menu</param>
-        /// <param name="displaySelector">A function that determines how each item is displayed</param>
         public Menu(string title, List<T> items, Func<T, string> displaySelector)
         {
             _title = title;
@@ -25,10 +19,6 @@ namespace DGD208_Spring2025_PeriGuven
             _displaySelector = displaySelector ?? (item => item?.ToString() ?? "");
         }
 
-        /// <summary>
-        /// Displays the menu and gets the user's selection.
-        /// </summary>
-        /// <returns>The selected item, or default(T) if the user chooses to go back</returns>
         public T ShowAndGetSelection()
         {
             if (_items.Count == 0)

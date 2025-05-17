@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace DGD208_Spring2025_PeriGuven
 {
-    public enum ItemType
+    public enum PetStat
     {
-        Food,
-        Toy
+        Hunger,
+        Sleep,
+        Fun
     }
 }

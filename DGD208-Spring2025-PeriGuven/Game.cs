@@ -9,7 +9,8 @@ namespace DGD208_Spring2025_PeriGuven
     public class Game
     {
         private bool _isRunning;
-        private Pet adoptedPet = null;
+        private List<Pet> adoptedPets = new List<Pet>();
+        private const int MaxPets = 3;
 
         public async Task GameLoop()
         {
@@ -52,23 +53,64 @@ namespace DGD208_Spring2025_PeriGuven
                     break;
 
                 case "1":
-                    if (adoptedPet != null)
+                    if (adoptedPets.Count >= MaxPets)
                     {
-                        Console.WriteLine("You already have a pet!");
+                        Console.WriteLine("You already have 3 friends!");
                         await Task.Delay(1500);
                     }
                     else
                     {
-                        var adoption = new AdoptingPet(adoptedPet);
-                        adoptedPet = await adoption.AdoptAsync();
+                        var adoption = new AdoptingPet();
+                        var newPet = await adoption.AdoptAsync();
+                        if (newPet != null)
+                        {
+                            adoptedPets.Add(newPet);
+                            Console.WriteLine($"You adopted {newPet.Name}!");
+                        }
                     }
                     break;
 
                 case "2":
-                    PetStats.Show(adoptedPet);
+                    if (adoptedPets.Count == 0)
+                    {
+                        Console.WriteLine("You don't have any pets.");
+                        await Task.Delay(1500);
+                    }
+                    else
+                    {
+                        var petMenu = new Menu<Pet>(
+                            "Your Pets",
+                            adoptedPets,
+                            pet => $"{pet.Name} ({pet.Type}) - Hunger: {pet.Hunger}, Sleep: {pet.Sleep}, Fun: {pet.Fun}"
+                        );
+
+                        Pet selectedPet = petMenu.ShowAndGetSelection();
+                        if (selectedPet != null)
+                        {
+                            PetStats.Show(selectedPet);
+                            Console.WriteLine("Press any key to return...");
+                            Console.ReadKey();
+                        }
+                    }
                     break;
 
                 case "3":
+                    if (adoptedPets.Count == 0)
+                    {
+                        Console.WriteLine("You have no pets.");
+                        await Task.Delay(1500);
+                    }
+                    else
+                    {
+                        var petMenu = new Menu<Pet>(
+                            "Select a pet to use item on",
+                            adoptedPets,
+                            pet => $"{pet.Name} ({pet.Type})"
+                        );
+
+                        Pet selectedPet = petMenu.ShowAndGetSelection();
+                        
+                    }
 
                     break;
 
