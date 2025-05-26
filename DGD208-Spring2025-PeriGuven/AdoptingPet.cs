@@ -10,7 +10,7 @@ namespace DGD208_Spring2025_PeriGuven
     {
         public AdoptingPet() { }
 
-        public async Task<Pet> AdoptAsync()
+        public async Task<Pet> AdoptAsync(Action<Pet> onDeath)
         {
             Console.Clear();
 
@@ -33,7 +33,7 @@ namespace DGD208_Spring2025_PeriGuven
             string name = Console.ReadLine();
 
             string petName = string.IsNullOrWhiteSpace(name) ? selectedType.ToString() : name;
-            var newPet = new Pet(selectedType.Value, petName);
+            var newPet = new Pet(selectedType.Value, petName, onDeath);
 
             Console.WriteLine($"You adopted {selectedType} {newPet.Name}!");
             await Task.Delay(1500);

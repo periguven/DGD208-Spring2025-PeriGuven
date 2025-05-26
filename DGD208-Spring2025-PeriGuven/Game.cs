@@ -61,10 +61,18 @@ namespace DGD208_Spring2025_PeriGuven
                     else
                     {
                         var adoption = new AdoptingPet();
-                        var newPet = await adoption.AdoptAsync();
+                        var newPet = await adoption.AdoptAsync((pet) =>
+                        {
+                            adoptedPets.Remove(pet);
+                            Console.Clear();
+                            Console.WriteLine($"Oh no! Your pet {pet.Name} ({pet.Type}) has died.");
+                        });
                         if (newPet != null)
                         {
                             adoptedPets.Add(newPet);
+
+                            _ = newPet.StartLifecycleAsync();
+
                             Console.WriteLine($"You adopted {newPet.Name}!");
                         }
                     }
@@ -99,6 +107,7 @@ namespace DGD208_Spring2025_PeriGuven
                     {
                         Console.WriteLine("You have no pets.");
                         await Task.Delay(1500);
+                        break;
                     }
                     else
                     {
@@ -109,7 +118,57 @@ namespace DGD208_Spring2025_PeriGuven
                         );
 
                         Pet selectedPet = petMenu.ShowAndGetSelection();
-                        
+
+                        if (selectedPet == null)
+                        {
+                            Console.WriteLine("None of thhe items are used.");
+                            await Task.Delay(1000);
+                            break;
+                        }
+                        var compatibleItems = ItemDatabase.AllItems
+                        .Where(item => item.CompatibleWith.Contains(selectedPet.Type))
+                        .ToList();
+
+                        if (compatibleItems.Count == 0)
+                        {
+                            Console.WriteLine("There are no compatible items for this pet.");
+                            await Task.Delay(1500);
+                            break;
+                        }
+
+                        var itemMenu = new Menu<Item>(
+                        "Select an item to use",
+                        compatibleItems,
+                        item => $"{item.Name} ({item.Type}) - {item.AffectedStat} +{item.EffectAmount}"
+                        );
+
+                        Item selectedItem = itemMenu.ShowAndGetSelection();
+
+                        if (selectedItem == null)
+                        {
+                            Console.WriteLine("No item selected.");
+                            await Task.Delay(1000);
+                            break;
+                        }
+
+                        Console.WriteLine($"Using {selectedItem.Name} on {selectedPet.Name}...");
+                        await Task.Delay((int)(selectedItem.Duration * 1000));
+
+                        switch (selectedItem.AffectedStat)
+                        {
+                            case PetStat.Hunger:
+                                selectedPet.Hunger = Math.Min(100, selectedPet.Hunger + selectedItem.EffectAmount);
+                                break;
+                            case PetStat.Sleep:
+                                selectedPet.Sleep = Math.Min(100, selectedPet.Sleep + selectedItem.EffectAmount);
+                                break;
+                            case PetStat.Fun:
+                                selectedPet.Fun = Math.Min(100, selectedPet.Fun + selectedItem.EffectAmount);
+                                break;
+                        }
+
+                        Console.WriteLine($"{selectedItem.AffectedStat} increased by {selectedItem.EffectAmount}!");
+                        await Task.Delay(1500);
                     }
 
                     break;
