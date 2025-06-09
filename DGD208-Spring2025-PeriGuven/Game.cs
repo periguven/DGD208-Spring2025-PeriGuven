@@ -10,7 +10,8 @@ namespace DGD208_Spring2025_PeriGuven
     {
         private bool _isRunning;
         private List<Pet> adoptedPets = new List<Pet>();
-        private const int MaxPets = 3;
+        private const int MinPets = 3;
+        private const int MaxPets = 10;
 
         public async Task GameLoop()
         {
@@ -55,11 +56,10 @@ namespace DGD208_Spring2025_PeriGuven
                 case "1":
                     if (adoptedPets.Count >= MaxPets)
                     {
-                        Console.WriteLine("You already have 3 friends!");
+                        Console.WriteLine($"You already have the maximum of {MaxPets} pets.");
                         await Task.Delay(1500);
+                        break;
                     }
-                    else
-                    {
                         var adoption = new AdoptingPet();
                         var newPet = await adoption.AdoptAsync((pet) =>
                         {
@@ -67,21 +67,18 @@ namespace DGD208_Spring2025_PeriGuven
                             Console.Clear();
                             Console.WriteLine($"Oh no! Your pet {pet.Name} ({pet.Type}) has died.");
                         });
-                        if (newPet != null)
+                    if (newPet != null)
                         {
                             adoptedPets.Add(newPet);
-
                             _ = newPet.StartLifecycleAsync();
-
                             Console.WriteLine($"You adopted {newPet.Name}!");
                         }
-                    }
                     break;
 
                 case "2":
-                    if (adoptedPets.Count == 0)
+                    if (adoptedPets.Count < MinPets)
                     {
-                        Console.WriteLine("You don't have any pets.");
+                        Console.WriteLine($"You need at least {MinPets} pets to view pet status.");
                         await Task.Delay(1500);
                     }
                     else
@@ -103,9 +100,9 @@ namespace DGD208_Spring2025_PeriGuven
                     break;
 
                 case "3":
-                    if (adoptedPets.Count == 0)
+                    if (adoptedPets.Count < MinPets)
                     {
-                        Console.WriteLine("You have no pets.");
+                        Console.WriteLine($"You need at least {MinPets} pets to use items.");
                         await Task.Delay(1500);
                         break;
                     }
